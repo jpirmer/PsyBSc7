@@ -185,3 +185,39 @@ data_ME <- data.frame(std_ME, pred_effect_ME)
 ggplot(data = data_ME, aes(x = std_ME,  y = pred_effect_ME)) + geom_point(pch = 16, col = "blue", cex = 4)+
   labs(y = "std. Leseleistung | Others", x =  "std. Bildungsabschluss der Mutter | Others",
        title = "Standardisierte bedingte Beziehung zwischen\n Bildungsabschluss der Mutter und Leseleistung")
+
+
+
+## Appendix B {#AppendixB} ----
+### Code zu 3D Grafiken
+library(plot3D)
+# Übersichtlicher: Vorbereitung
+x <- Schulleistungen_std$IQ
+y <- Schulleistungen_std$reading
+z <- Schulleistungen_std$math
+fit <- lm(y ~ x*z)
+grid.lines = 26
+x.pred <- seq(min(x), max(x), length.out = grid.lines)
+z.pred <- seq(min(z), max(z), length.out = grid.lines)
+xz <- expand.grid( x = x.pred, z = z.pred)
+y.pred <- matrix(predict(fit, newdata = xz),
+                 nrow = grid.lines, ncol = grid.lines)
+fitpoints <- predict(fit)
+
+# Plot:
+scatter3D(x = x, y = z, z = y, pch = 16, cex = 1.2,
+          theta = 0, phi = 0, ticktype = "detailed",
+          xlab = "IQ", ylab = "math", zlab = "reading",
+          surf = list(x = x.pred, y = z.pred, z = y.pred,
+                      facets = NA, fit = fitpoints),
+          main = "Moderierte Regression")
+
+
+
+scatter3D(x = x, y = z, z = y, pch = 16, cex = 1.2,
+          theta = 20, phi = 20, ticktype = "detailed",
+          xlab = "IQ", ylab = "math", zlab = "reading",
+          surf = list(x = x.pred, y = z.pred, z = y.pred,
+                      facets = NA, fit = fitpoints),
+          main = "Moderierte Regression")
+
